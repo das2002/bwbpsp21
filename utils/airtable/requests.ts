@@ -84,7 +84,7 @@ export async function getUser(user: UserRecord, cached = false): Promise<UserRec
     password: 'coldbrew09',
     phone: '',
     rid: 'recKoO9X3HKXFXh6B',
-    uname: 'jenhoang',
+    uname: 'jenhoang', //interesting, they have the uname already set here
     graduated: true,
   };
 
