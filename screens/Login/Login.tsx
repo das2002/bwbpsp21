@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, ScrollView, Alert } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ImageContainer, LoginImg, LoginInput, LoginHeader, LoginButton, LoginButtonText, LoginText } from './styles';
 import { getUser } from '@utils/airtable/requests';
+import { Provider as AlertProvider } from 'react-alert'
 import { UserRecord } from '@utils/airtable/interface';
 import { GlobalContext } from '@components/ContextProvider';
 import { UserMock } from '@utils/airtable/mocks';
@@ -40,35 +41,21 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
 
   
   async login(): Promise<void> {
-    const user = this.state.user //await getUser(this.state.user); //so even if we don't set anything here, its still rendering a user 
-    /*const createTwoButtonAlert = () =>
-      Alert.alert(
-        "Login Error",
-        "Username or Password is incorrect",
-        [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel"
-          },
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ],
-        { cancelable: false }
-      );*/
+    const user = await getUser(this.state.user); //so even if we don't set anything here, its still rendering a user 
     console.log(user) 
-    if (user.uname != "" && user.password != "") {
+    if (user) {
       //if (user.uname == getUser(this.state.user).uname)
       console.log('entered')
       console.log(user.uname)
-      console.log(user.password) 
-      if(user.uname == 'jen' && user.password == "coldbrew09") {
-        await this.context.setUser(await getUser(user));
-        this.props.navigation.navigate('App');
-      }      
+      //console.log(user.password) 
+     // if(user.uname == 'jenhoang' && user.password == "coldbrew09") {
+       await this.context.setUser(user);
+       this.props.navigation.navigate('App');
+    //  }      
     } else {
       console.log('Error');
       //createTwoButtonAlert;
-      //alert.show('Incorrect username or password.');
+      alert.show ('Incorrect username or password.');
     }
   }
 

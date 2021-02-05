@@ -70,7 +70,7 @@ export async function findContact(senderRef: string): Promise<ContactRecord> {
 }
 
 export async function getUser(user: UserRecord, cached = false): Promise<UserRecord | null> {
-  console.log('Fetching user');
+  console.log('Fetching user'); 
 
   // FOR BWBP
   // NOTE: Please do not alter anything here or you may be disqualified.
@@ -87,8 +87,15 @@ export async function getUser(user: UserRecord, cached = false): Promise<UserRec
     uname: 'jenhoang', //interesting, they have the uname already set here
     graduated: true,
   };
+  if(user) {const pass = user.password;
+    const username = user.uname;
+  
 
-  return testUser;
+    if(username == testUser.uname && pass == testUser.password) {
+        return testUser;
+    }
+  }
+  return null;
 
   // FOR THOSE WHO ARE INTERESTED IN HOW IT'S ACTUALLY IMPLEMENTED
   if (cached) {
