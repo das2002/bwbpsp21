@@ -1,11 +1,13 @@
-import React from 'react';
-import { KeyboardAvoidingView, ScrollView } from 'react-native';
+import React, {Component} from 'react';
+import { KeyboardAvoidingView, ScrollView, Alert } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ImageContainer, LoginImg, LoginInput, LoginHeader, LoginButton, LoginButtonText, LoginText } from './styles';
 import { getUser } from '@utils/airtable/requests';
+import { Provider as AlertProvider } from 'react-alert'
 import { UserRecord } from '@utils/airtable/interface';
 import { GlobalContext } from '@components/ContextProvider';
 import { UserMock } from '@utils/airtable/mocks';
+
 
 interface LoginScreenState {
   user: UserRecord;
@@ -37,13 +39,28 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
     };
   }
 
+  
   async login(): Promise<void> {
-    const user = await getUser(this.state.user);
-    if (user) {
-      await this.context.setUser(user);
-      this.props.navigation.navigate('App');
+    const user = await getUser(this.state.user); //so even if we don't set anything here, its still rendering a user <- this is the original problem, before editing
+    //I changed getUser to perform the authentication and return the data if the username was jenhoang and the password was coldbrew09
+    //if the input was incorrect, const user would be null and false and go straight to the incorrect section
+    console.log(user) //just checking
+    if (user) { //if it the state user worked, it would return true, if not, it would be false
+      console.log('entered')
+      console.log(user.uname)
+       await this.context.setUser(user);
+       this.props.navigation.navigate('App');   
     } else {
-      alert('Incorrect username or password.');
+      console.log('Error');
+      Alert.alert( //new alert for the app, using stack overflow help
+        '',
+        'Incorrect username or password',  
+        [
+           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+           {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: false }
+   )
     }
   }
 
@@ -60,10 +77,7 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
             autoCapitalize="none"
             onChangeText={(text): void =>
               this.setState({
-                user: {
-                  ...this.state.user,
-                  uname: text.trim().toLowerCase(),
-                },
+                user: {...this.state.user, uname: text.trim().toLowerCase() },
               })
             }
             value={this.state.user.uname}
@@ -78,6 +92,7 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
               })
             }
             value={this.state.user.password}
+            
           />
 
           <LoginButton onPress={(): Promise<void> => this.login()}>
