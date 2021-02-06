@@ -74,6 +74,7 @@ export async function getUser(user: UserRecord, cached = false): Promise<UserRec
 
   // FOR BWBP
   // NOTE: Please do not alter anything here or you may be disqualified.
+  //we don't use testUser until we verify the password adn username
   const testUser: UserRecord = {
     admin: false,
     cohort: 'recJUdvrGp9a6SXKG',
@@ -87,21 +88,23 @@ export async function getUser(user: UserRecord, cached = false): Promise<UserRec
     uname: 'jenhoang', //interesting, they have the uname already set here
     graduated: true,
   };
-  if(user) {const pass = user.password;
-    const username = user.uname;
+  if(cached == false) {
+    if(user) {const pass = user.password; // if the parameter user contains some data (not empty), the we check the username and password
+      const username = user.uname;
+    
+
+      if(username == testUser.uname && pass == testUser.password) { //if this is true, only then will we return the data
+          return testUser;
+      }
+      
+    } //this implementation accounts for cached as well
+  return null; //if they are wrong, we return null
+  }
   
-
-    if(username == testUser.uname && pass == testUser.password) {
-        return testUser;
-    }
-  }
-  return null;
-
-  // FOR THOSE WHO ARE INTERESTED IN HOW IT'S ACTUALLY IMPLEMENTED
-  if (cached) {
-    return getStoredUser();
-  }
-
+// FOR THOSE WHO ARE INTERESTED IN HOW IT'S ACTUALLY IMPLEMENTED
+if (cached) {
+  return getStoredUser();
+}  
   const params: GetParameters<UserRecord> = {
     tableName: Tables.User,
     format: formatUser,

@@ -41,8 +41,10 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
 
   
   async login(): Promise<void> {
-    const user = await getUser(this.state.user); //so even if we don't set anything here, its still rendering a user 
-    console.log(user) 
+    const user = await getUser(this.state.user); //so even if we don't set anything here, its still rendering a user <- this is the original problem, before editing
+    //I changed getUser to perform the authentication and return the data if the username was jenhoang and the password was coldbrew09
+    //if the input was incorrect, const user would be null and false and go straight to the incorrect section
+    console.log(user) //just checking
     if (user) { //if it the state user worked, it would return true, if not, it would be false
       console.log('entered')
       console.log(user.uname)
@@ -50,7 +52,7 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
        this.props.navigation.navigate('App');   
     } else {
       console.log('Error');
-      Alert.alert(
+      Alert.alert( //new alert for the app, using stack overflow help
         '',
         'Incorrect username or password',  
         [
