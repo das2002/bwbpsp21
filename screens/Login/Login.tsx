@@ -43,19 +43,22 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
   async login(): Promise<void> {
     const user = await getUser(this.state.user); //so even if we don't set anything here, its still rendering a user 
     console.log(user) 
-    if (user) {
-      //if (user.uname == getUser(this.state.user).uname)
+    if (user) { //if it the state user worked, it would return true, if not, it would be false
       console.log('entered')
       console.log(user.uname)
-      //console.log(user.password) 
-     // if(user.uname == 'jenhoang' && user.password == "coldbrew09") {
        await this.context.setUser(user);
-       this.props.navigation.navigate('App');
-    //  }      
+       this.props.navigation.navigate('App');   
     } else {
       console.log('Error');
-      //createTwoButtonAlert;
-      alert.show ('Incorrect username or password.');
+      Alert.alert(
+        '',
+        'Incorrect username or password',  
+        [
+           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+           {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: false }
+   )
     }
   }
 
